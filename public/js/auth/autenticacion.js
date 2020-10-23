@@ -7,13 +7,35 @@ class Autenticacion {
   }
 
   crearCuentaEmailPass (email, password, nombres) {
-    /*Materialize.toast(
-      `Bienvenido ${nombres}, debes realizar el proceso de verificación`,
-      4000
-    )
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then(result => {
+        result.user.updateProfile({
+          displayName : nombres
+        })
 
-    $('.modal').modal('close')*/
-    
+        const configuration = {
+          url : 'http://localhost:3000/'
+        }
+
+        result.user.sendEmailVerification(configuration)
+        .catch(error => {
+          console.error(error)
+          Materialize.toast(error.message, 4000)
+        })
+
+        firebase.auth().signOut()
+
+        Materialize.toast(
+          `Bienvenido ${nombres}, debes realizar el proceso de verificación`,
+          4000
+        )
+
+        $('.modal').modal('close')
+      })
+      .catch(error => {
+        console.error(error)
+        Materialize.toast(error.message, 4000)
+      })
   }
 
   authCuentaGoogle () {
