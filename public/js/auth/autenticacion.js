@@ -77,6 +77,17 @@ class Autenticacion {
   }
 
   authTwitter () {
-    // TODO: Crear auth con twitter
+    const provider = new firebase.auth.TwitterAuthProvider()
+
+    firebase.auth().signInWithPopup(provider)
+    .then(result => {
+      $('#avatar').attr('src', result.user.photoURL)
+      $('.modal').modal('close')
+      Materialize.toast(`Bienvenido ${result.user.displayName} !! `, 4000)
+    })
+    .catch(error => {
+      console.error(error)
+      Materialize.toast(`Error al autenticarse con Google: ${error}`, 4000)
+    })
   }
 }
