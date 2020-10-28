@@ -1,4 +1,4 @@
-$(() => {    
+$(() => {
 
     //$("#authFB").click(() => );
 
@@ -13,7 +13,8 @@ $(() => {
     $("#btnInicioEmail").click(() => {
         const email = $('#emailSesion').val();
         const password = $('#passwordSesion').val();
-        // TODO: LLamar auth cuenta con email
+        const auth = new Autenticacion()
+        auth.authEmailPass(email, password)
     });
 
     //$("#authGoogle").click(() => //AUTH con GOOGLE);

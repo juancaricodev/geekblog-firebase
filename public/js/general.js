@@ -28,7 +28,7 @@ $(() => {
   $('#btnInicioSesion').click(() => {
     //$('#avatar').attr('src', 'imagenes/usuario.png')
     // Materialize.toast(`Error al realizar SignOut => ${error}`, 4000)
-    
+
 
     $('#emailSesion').val('')
     $('#passwordSesion').val('')
@@ -36,16 +36,22 @@ $(() => {
   })
 
   $('#avatar').click(() => {
-    //$('#avatar').attr('src', 'imagenes/usuario.png')
-    //Materialize.toast(`SignOut correcto`, 4000)
+    firebase.auth().signOut()
+      .then(() => {
+        $('#avatar').attr('src', 'imagenes/usuario.png')
+        Materialize.toast(`SignOut correcto`, 4000)
+      })
+      .catch(error => {
+        Materialize.toast(`Error al realizar SignOut ${error}`, 4000)
+      })
   })
 
   $('#btnTodoPost').click(() => {
-    $('#tituloPost').text('Posts de la Comunidad')   
+    $('#tituloPost').text('Posts de la Comunidad')
   })
 
   $('#btnMisPost').click(() => {
     //$('#tituloPost').text('Mis Posts')
-    //Materialize.toast(`Debes estar autenticado para ver tus posts`, 4000)    
+    //Materialize.toast(`Debes estar autenticado para ver tus posts`, 4000)
   })
 })
