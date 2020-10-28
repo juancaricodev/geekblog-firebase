@@ -57,7 +57,7 @@ class Autenticacion {
       })
       .catch(error => {
         console.error(error)
-        Materialize.toast(`Error al autenticarse con Google`, 4000)
+        Materialize.toast(`Error al autenticarse con Google: ${error}`, 4000)
       })
   }
 
