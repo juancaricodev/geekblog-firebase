@@ -2,18 +2,50 @@ $(() => {
   $('.tooltipped').tooltip({ delay: 50 })
   $('.modal').modal()
 
-  // TODO: Adicionar el service worker
+  // Adicionar el service worker
+  navigator.serviceWorker
+  .register('../notificaciones-sw')
+  .then(registro => {
+    console.log('service worker registrado')
+    firebase.messaging().useServiceWorker(registro)
+  })
+  .catch(error => {
+    console.error(`Error al registrar el service worker => ${error}`)
+  })
 
-  // Init Firebase nuevamente
-  firebase.initializeApp(varConfig);
+  const messaging = firebase.messaging()
 
-  // TODO: Registrar LLave publica de messaging
+  // Registrar LLave publica de messaging
+  messaging.usePublicVapidKey(
+    'BFTkNne-MpDOpN2CcDUBFckOv3MJQxe-Vle6MnMp-2Txn6-Y3H5syYL4iZgTx5GJry_O8tXLNJdXNHiYpBqGjQM'
+  )
 
-  // TODO: Solicitar permisos para las notificaciones
+  // Solicitar permisos para las notificaciones
+  messaging.requestPermision()
+  .then(() => {
+    console.log('Permiso otorgado')
+    return messaging.getToken()
+  })
+  .then(token => {
+    const db = firebase.firestore()
+    // db.settings({timestampsInSnapshots:true})
+    db.collection('tokens')
+      .doc(token)
+      .set({
+        token: token
+      }).catch(error => {
+        console.error(`Error al insertar el token en al BD => ${error}`)
+      })
+  })
+
 
   // TODO: Recibir las notificaciones cuando el usuario esta foreground
 
   // TODO: Recibir las notificaciones cuando el usuario esta background
+
+
+  // Init Firebase nuevamente
+  firebase.initializeApp(varConfig);
 
   // Listening real time
   const post = new Post()
