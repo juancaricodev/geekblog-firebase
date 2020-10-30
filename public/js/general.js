@@ -2,6 +2,9 @@ $(() => {
   $('.tooltipped').tooltip({ delay: 50 })
   $('.modal').modal()
 
+  // Init Firebase nuevamente
+  firebase.initializeApp(varConfig);
+
   // Adicionar el service worker
   navigator.serviceWorker
   .register('../notificaciones-sw')
@@ -38,14 +41,33 @@ $(() => {
       })
   })
 
+  // Obtener token cuando se refresca
+  messaging.onTokenRefresh(() => {
+    messaging.getToken()
+    .then(token => {
+      console.log('El token se ha renovado')
 
-  // TODO: Recibir las notificaciones cuando el usuario esta foreground
+      const db = firebase.firestore()
+      // db.settings({timestampsInSnapshots:true})
+      db.collection('tokens')
+        .doc(token)
+        .set({
+          token: token
+        })
+        .catch(error => {
+          console.error(`Error al insertar el token en al BD => ${error}`)
+        })
+    })
+  })
+
+
+  // Recibir las notificaciones cuando el usuario esta foreground
+  messaging.onMessage(payload => {
+    Materialize.toast(`Tenemos un nuevo post para ti. Revísalo: ${payload.data.titulo}`, 6000)
+  })
 
   // TODO: Recibir las notificaciones cuando el usuario esta background
 
-
-  // Init Firebase nuevamente
-  firebase.initializeApp(varConfig);
 
   // Listening real time
   const post = new Post()
